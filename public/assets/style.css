@@ -1,0 +1,20 @@
+table {
+  border-collapse: collapse;
+  border: 2px solid rgb(13,41,58);
+  font-family: monospace;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+th {
+  border: 1px solid rgb(13,41,58);
+  padding: 8px 10px;
+  background-color: rgb(37,121,133);
+  color: rgb(13,41,58);
+}
+
+td {
+  border: 1px solid rgb(13,41,58);
+  padding: 8px 10px;
+  color: rgb(13,41,58);
+}
