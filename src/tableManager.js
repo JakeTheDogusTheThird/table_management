@@ -1,31 +1,34 @@
-function buildTable(data) {
+function renderTable(data) {
   let table = document.getElementById("dataTable");
-
-  for (let i = 0; i < data.length; i++) {
-    let row = `<tr>
-                  <td>${data[i].id}</td>
-                  <td>${data[i].firstName}</td>
-                  <td>${data[i].lastName}</td>
-                  <td>${data[i].email}</td>
-                  <td>${data[i].phone}</td>
-               </tr>`
-    table.innerHTML += row;
+  let rows = "";
+  let paginatedData = pagination(data, state.page, state.rows);
+  let querySetPage = paginatedData.querySet;
+  for (let i = 0; i < querySetPage.length; i++) {
+    rows += `<tr>
+                  <td>${querySetPage[i].id}</td>
+                  <td>${querySetPage[i].firstName}</td>
+                  <td>${querySetPage[i].lastName}</td>
+                  <td>${querySetPage[i].email}</td>
+                  <td>${querySetPage[i].phone}</td>
+               </tr>`;
   }
+  table.innerHTML = rows;
+
+  pageButtons(paginatedData.pages, data);
 }
 
-
 class Person {
-  #id
-  #firstName
-  #lastName
-  #email
-  #phone
-  constructor(id, firstName, lastName, email, phone) {
+  #id;
+  #firstName;
+  #lastName;
+  #phone;
+  #email;
+  constructor(id, firstName, lastName, phone, email) {
     this.#id = id;
     this.#firstName = firstName;
     this.#lastName = lastName;
-    this.#email = email;
     this.#phone = phone;
+    this.#email = email;
   }
 
   get id() {
@@ -49,11 +52,101 @@ class Person {
   }
 }
 
-let person1 = new Person(1, "john", "doe", "john@mail.com", "12321");
-let person2 = new Person(2, "ann", "donovan", "adonovan@mail.con", "1232131");
-let person3 = new Person(3, "susan", "milei", "smilei@mail.con", "28392");
-let person4 = new Person(4, "anton", "chighur", "noOldmen@mail.con", "1239128309");
+async function fetchData() {
+  try {
+    const response = await fetch(SERVER_URL);
+    const data = await response.json();
+    return data.users;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+    return [];
+  }
+}
 
-let persons = [person1, person2, person3, person4];
+document.querySelectorAll("th[data-column]").forEach((th) => {
+  th.addEventListener("click", () => {
+    const column = th.getAttribute("data-column");
+    let order = th.getAttribute("data-order");
 
-buildTable(persons);
+    order = order === "desc" ? "asc" : "desc";
+    th.setAttribute("data-order", order);
+
+    users.sort((a, b) => compareBy(a, b, column, order));
+    updateSortingIndicators(th, order);
+    renderTable(users);
+  });
+});
+
+function compareBy(a, b, column, order) {
+  const aValue = a[column];
+  const bValue = b[column];
+  if (typeof aValue === "string") {
+    return order === "asc"
+      ? aValue.localeCompare(bValue)
+      : bValue.localeCompare(aValue);
+  }
+  return order === "asc" ? aValue - bValue : bValue - aValue;
+}
+
+function updateSortingIndicators(th, order) {
+  let upArrow = "&uarr;";
+  let downArrow = "&darr;";
+  let oldHtml = th.innerHTML;
+  if (order === "asc") {
+    th.innerHTML = oldHtml.slice(0, -1) + upArrow;
+  } else {
+    th.innerHTML = oldHtml.slice(0, -1) + downArrow;
+  }
+}
+
+const SERVER_URL =
+  prompt("Please select data set size (large or small): ").toLowerCase() ===
+  "large"
+    ? "https://dummyjson.com/users?limit=208"
+    : "https://dummyjson.com/users?limit=32";
+
+let users = [];
+
+fetchData().then((data) => {
+  users = data;
+  renderTable(users);
+});
+
+const state = {
+  page: 5,
+  rows: 50,
+};
+
+function pagination(querySet, page, rows) {
+  let trimStart = (page - 1) * rows;
+  let trimEnd = trimStart + rows;
+
+  let trimmedData = querySet.slice(trimStart, trimEnd);
+
+  let pages = Math.ceil(querySet.length / rows);
+
+  return {
+    querySet: trimmedData,
+    pages: pages,
+  };
+}
+
+function pageButtons(pages, data) {
+  let wrapper = document.getElementById("pagination-wrapper");
+  let buttons = "";
+
+  for (let page = 1; page <= pages; page++) {
+    buttons += `<button value=${page} class="page btn btn-sm btn-info">${page}</button>`;
+  }
+
+  wrapper.innerHTML = buttons;
+  let wrappedButtons = document.getElementsByClassName("page");
+  for (let i = 0; i < wrappedButtons.length; i++) {
+    let button = wrappedButtons[i];
+    button.addEventListener("click", () => {
+      document.getElementById("dataTable").innerHTML = "";
+      state.page = button.textContent;
+      renderTable(data);
+    });
+  }
+}
