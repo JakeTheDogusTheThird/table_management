@@ -3,8 +3,9 @@ const SERVER_URL =
   "large"
     ? "https://dummyjson.com/users?limit=208"
     : "https://dummyjson.com/users?limit=32";
-const ROWS = 20;
+const ROWS = 50;
 const PAGE_WINDOW_SIZE = 5;
+const FIRST_PAGE = 1;
 
 class PaginatedDataSet {
   #rows;
@@ -15,22 +16,31 @@ class PaginatedDataSet {
     this.#dataSet = dataSet;
     this.#rows = rows;
     this.#numberOfPages = Math.ceil(dataSet.length / rows);
+    this.#currentPageNumber = FIRST_PAGE;
   }
 
   getPageByNumber(pageNumber) {
-    this.#currentPageNumber = pageNumber;
-    let start = (this.#currentPageNumber - 1) * this.#rows;
+    let start = (pageNumber - FIRST_PAGE) * this.#rows;
     let end = start + this.#rows;
 
     return this.#dataSet.slice(start, end);
+  }
+
+  goToPage(pageNumber) {
+    this.#currentPageNumber = pageNumber;
+    return this.getPageByNumber(pageNumber);
+  }
+
+  getCurrentPage() {
+    return this.getPageByNumber(this.#currentPageNumber);
   }
 
   get numberOfPages() {
     return this.#numberOfPages;
   }
 
-  getCurrentPage() {
-    return this.getPageByNumber(this.#currentPageNumber);
+  get currentPageNumber() {
+    return this.#currentPageNumber;
   }
 
   set currentPageNumber(pageNumber) {
@@ -50,24 +60,42 @@ async function fetchData() {
 }
 
 function routePageButtons(dataSet) {
-  let buttons = document.getElementsByClassName("page");
-  for (let i = 0; i < buttons.length; i++) {
-    let button = buttons[i];
-    button.addEventListener("click", () => {
-      dataSetPage = dataSet.getPageByNumber(button.textContent);
+  let wrapper = document.getElementById("page-button-wrapper");
+  wrapper.addEventListener("click", (event) => {
+    if (event.target.tagName === "BUTTON") {
+      const dataSetPage = dataSet.goToPage(Number(event.target.getAttribute("value")));
       renderPageTable(dataSetPage);
-    });
-  }
+      renderPageButtons(dataSet.currentPageNumber, dataSet.numberOfPages);
+    }
+  });
 }
 
-function renderPageButtons(numberOfPages) {
-  let wrapper = document.getElementById("page-buttons-wrapper");
+function renderPageButtons(currentPageNumber, numberOfPages) {
+  console.log("currentPage:", currentPageNumber);
+  let wrapper = document.getElementById("page-button-wrapper");
   let buttons = "";
 
-  for (let page = 1; page <= numberOfPages; page++) {
+  const halfWindow = Math.floor(PAGE_WINDOW_SIZE / 2);
+  let start = Math.max(FIRST_PAGE, currentPageNumber - halfWindow);
+  let end = start + PAGE_WINDOW_SIZE - 1;
+
+  if (end > numberOfPages) {
+    end = numberOfPages;
+    start = Math.max(FIRST_PAGE, end - PAGE_WINDOW_SIZE + FIRST_PAGE);
+  }
+
+  for (let page = start; end != FIRST_PAGE && page <= end; page++) {
     buttons += `<button value=${page} class="page btn btn-lg btn-outline-dark mx-1">${page}</button>`;
   }
-  console.log("Buttons", buttons);
+
+  if (currentPageNumber !== FIRST_PAGE) {
+    buttons =
+      `<button value=${FIRST_PAGE} class="page btn btn-lg btn-outline-dark mx-1">First</button>` +
+      buttons;
+  }
+  if (currentPageNumber !== numberOfPages) {
+    buttons += `<button value=${numberOfPages} class="page btn btn-lg btn-outline-dark mx-1">Last</button>`;
+  }
   wrapper.innerHTML = buttons;
 }
 
@@ -95,7 +123,7 @@ function routeSortingIndicators(dataSet) {
 
       order = order === "desc" ? "asc" : "desc";
       th.setAttribute("data-order", order);
-      let dataSetPage = dataSet.getCurrentPage();
+      let dataSetPage = [...dataSet.getCurrentPage()];
       dataSetPage.sort((a, b) => compareBy(a, b, column, order));
       updateSortingIndicators(th, order);
       renderPageTable(dataSetPage);
@@ -127,9 +155,9 @@ function updateSortingIndicators(th, order) {
 
 fetchData().then((data) => {
   const dataSet = new PaginatedDataSet(data, ROWS);
-  let firstPage = dataSet.getPageByNumber(1);
+  let firstPage = dataSet.getCurrentPage();
   renderPageTable(firstPage);
-  renderPageButtons(dataSet.numberOfPages);
+  renderPageButtons(dataSet.currentPageNumber, dataSet.numberOfPages);
   routePageButtons(dataSet);
   routeSortingIndicators(dataSet);
 });
