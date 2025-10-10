@@ -1,3 +1,44 @@
+const state = {
+  page: 5,
+  rows: 50,
+};
+
+function pagination(querySet, page, rows) {
+  let trimStart = (page - 1) * rows;
+  let trimEnd = trimStart + rows;
+
+  let trimmedData = querySet.slice(trimStart, trimEnd);
+
+  let pages = Math.ceil(querySet.length / rows);
+
+  return {
+    querySet: trimmedData,
+    pages: pages,
+  };
+}
+
+function pageButtons(pages) {
+  let wrapper = document.getElementById("pagination-wrapper");
+  let buttons = "";
+
+  for (let page = 1; page <= pages; page++) {
+    buttons += `<button value=${page} class="page btn btn-sm btn-info">${page}</button>`;
+  }
+
+  wrapper.innerHTML = buttons;
+}
+
+function routeButtons(dataPage) {
+  let wrappedButtons = document.getElementsByClassName("page");
+  for (let i = 0; i < wrappedButtons.length; i++) {
+    let button = wrappedButtons[i];
+    button.addEventListener("click", () => {
+      state.page = button.textContent;
+      renderTable(dataPage);
+    });
+  }
+}
+
 function renderTable(data) {
   let table = document.getElementById("dataTable");
   let rows = "";
@@ -13,7 +54,6 @@ function renderTable(data) {
                </tr>`;
   }
   table.innerHTML = rows;
-
   pageButtons(paginatedData.pages, data);
 }
 
@@ -111,42 +151,3 @@ fetchData().then((data) => {
   users = data;
   renderTable(users);
 });
-
-const state = {
-  page: 5,
-  rows: 50,
-};
-
-function pagination(querySet, page, rows) {
-  let trimStart = (page - 1) * rows;
-  let trimEnd = trimStart + rows;
-
-  let trimmedData = querySet.slice(trimStart, trimEnd);
-
-  let pages = Math.ceil(querySet.length / rows);
-
-  return {
-    querySet: trimmedData,
-    pages: pages,
-  };
-}
-
-function pageButtons(pages, data) {
-  let wrapper = document.getElementById("pagination-wrapper");
-  let buttons = "";
-
-  for (let page = 1; page <= pages; page++) {
-    buttons += `<button value=${page} class="page btn btn-sm btn-info">${page}</button>`;
-  }
-
-  wrapper.innerHTML = buttons;
-  let wrappedButtons = document.getElementsByClassName("page");
-  for (let i = 0; i < wrappedButtons.length; i++) {
-    let button = wrappedButtons[i];
-    button.addEventListener("click", () => {
-      document.getElementById("dataTable").innerHTML = "";
-      state.page = button.textContent;
-      renderTable(data);
-    });
-  }
-}

@@ -7,7 +7,8 @@
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
-    <script src="../src/tableManager.js" defer></script>
+    <!-- <script src="../src/tableManager.js" defer></script> -->
+    <script src="../src/tableManager2.js" defer></script>
   </head>
 
   <body>
@@ -15,18 +16,23 @@
       <thead class="thead-dark">
         <tr>
           <th scope="col" data-column="id" data-order="asc">id &uarr;</th>
-          <th scope="col" data-column="firstName" data-order="asc">firstName &uarr;</th>
-          <th scope="col" data-column="lastName" data-order="asc">lastName &uarr;</th>
+          <th scope="col" data-column="firstName" data-order="asc">
+            firstName &uarr;
+          </th>
+          <th scope="col" data-column="lastName" data-order="asc">
+            lastName &uarr;
+          </th>
           <th scope="col" data-column="email" data-order="asc">email &uarr;</th>
           <th scope="col" data-column="phone" data-order="asc">phone &uarr;</th>
         </tr>
       </thead>
 
-      <tbody id="dataTable"></tbody>
+      <tbody id="data-table"></tbody>
     </table>
 
-    <div class="container">
-      <div id="pagination-wrapper"></div>
-    </div>
+    <div
+      id="page-buttons-wrapper"
+      class="d-flex justify-content-center my-3"
+    ></div>
   </body>
 </html>
