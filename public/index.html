@@ -12,27 +12,38 @@
   </head>
 
   <body>
-    <table class="table table-striped">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col" data-column="id" data-order="asc">id &uarr;</th>
-          <th scope="col" data-column="firstName" data-order="asc">
-            firstName &uarr;
-          </th>
-          <th scope="col" data-column="lastName" data-order="asc">
-            lastName &uarr;
-          </th>
-          <th scope="col" data-column="email" data-order="asc">email &uarr;</th>
-          <th scope="col" data-column="phone" data-order="asc">phone &uarr;</th>
-        </tr>
-      </thead>
+    <div class="container">
+      <div class="input-group my-3">
+        <input type="text" id="search-bar" class="form-control" placeholder="Search user" />
+        <button class="btn btn-lg btn-outline-dark" type="button" id="search-button">Search</button>
+      </div>
+      <table class="table table-striped">
+        <thead id="table-head" class="thead-dark">
+          <tr>
+            <th scope="col" data-column="id" data-order="asc">id &uarr;</th>
+            <th scope="col" data-column="firstName" data-order="asc">
+              firstName &uarr;
+            </th>
+            <th scope="col" data-column="lastName" data-order="asc">
+              lastName &uarr;
+            </th>
+            <th scope="col" data-column="email" data-order="asc">
+              email &uarr;
+            </th>
+            <th scope="col" data-column="phone" data-order="asc">
+              phone &uarr;
+            </th>
+          </tr>
+        </thead>
 
-      <tbody id="data-table"></tbody>
-    </table>
+        <tbody id="data-table"></tbody>
+      </table>
+      <div id="details-container"></div> 
 
-    <div
-      id="page-button-wrapper"
-      class="d-flex justify-content-center my-3"
-    ></div>
+      <div
+        id="page-button-wrapper"
+        class="d-flex justify-content-center my-3"
+      ></div>
+    </div>
   </body>
 </html>
