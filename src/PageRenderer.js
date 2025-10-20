@@ -10,30 +10,61 @@ class PageRenderer {
     this.#details = tableDetails;
   }
 
-  renderHeader(columns, sortState = {}) {
-    this.#header.innerHTML = "";
-    let row = "";
+  updateColumnHeaderSortingOrder(columnId, sortingOrder) {
+    const column = this.#header.getElementById(columnId);
+    const orderPlaceholder = column.querySelector("order-placeholder");
 
-    columns.forEach((column) => {
-      const th = document.createElement("th");
-      th.setAttribute("data-column", column.key);
-      th.setAttribute("data-label", column.label)
-      th.setAttribute("data-order", sortState[column.key] || "none");
-
-      let arrow = " ↑↓";
-      if (sortState[column.key] === "asc") arrow = " ↑";
-      if (sortState[column.key] === "desc") arrow = " ↓";
-
-      th.innerHTML = `${column.label}${arrow}`;
-      row.appendChild(th);
-    });
-
-    this.#header.appendChild(row);
+    orderPlaceholder.innerHTML = sortingOrder;
   }
 
-  renderBody() {}
+  renderBody(dataSetPage) {
+    let rows = "";
+    for (let i = 0; i < dataSetPage.length; i++) {
+      rows += `<tr>
+                  <td>${dataSetPage[i].id}</td>
+                  <td>${dataSetPage[i].firstName}</td>
+                  <td>${dataSetPage[i].lastName}</td>
+                  <td>${dataSetPage[i].email}</td>
+                  <td>${dataSetPage[i].phone}</td>
+               </tr>`;
+    }
+    this.#body.innerHTML = rows;
+  }
 
-  renderButtons() {}
+  renderTableButtons(currentPageNumber, numberOfPages) {
+    if (numberOfPages === ONE_PAGE || numberOfPages === ZERO_PAGES) {
+      this.#buttons.innerHTML = "";
+      return;
+    }
+
+    const halfWindow = Math.floor(PAGE_WINDOW_SIZE / 2);
+    let start = Math.max(FIRST_PAGE, currentPageNumber - halfWindow);
+    let end = start + PAGE_WINDOW_SIZE - ONE_PAGE;
+
+    if (end > numberOfPages) {
+      end = numberOfPages;
+      start = Math.max(FIRST_PAGE, end - PAGE_WINDOW_SIZE + FIRST_PAGE);
+    }
+
+    let buttonsHtml = "";
+    for (let page = start; page <= end; page++) {
+      let activeButton = "";
+      if (page == currentPageNumber) {
+        activeButton = "active";
+      }
+      buttonsHtml += `<button value=${page} class="page btn btn-lg btn-outline-dark mx-1 ${activeButton}">${page}</button>`;
+    }
+
+    if (currentPageNumber !== FIRST_PAGE) {
+      buttonsHtml =
+        `<button value=${FIRST_PAGE} class="page btn btn-lg btn-outline-dark mx-1">First</button>` +
+        buttonsHtml;
+    }
+    if (currentPageNumber !== numberOfPages) {
+      buttonsHtml += `<button value=${numberOfPages} class="page btn btn-lg btn-outline-dark mx-1">Last</button>`;
+    }
+    this.#buttons.innerHTML = buttonsHtml;
+  }
 
   renderDetails() {}
 
