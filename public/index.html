@@ -8,37 +8,99 @@
       crossorigin="anonymous"
     />
     <!-- <script src="../src/tableManager.js" defer></script> -->
-    <script src="../src/tableManager2.js" defer></script>
+    <script src="../src/tableManager2.js"></script>
   </head>
 
   <body>
     <div class="container">
       <div class="input-group my-3">
-        <input type="text" id="search-bar" class="form-control" placeholder="Search user" />
-        <button class="btn btn-lg btn-outline-dark" type="button" id="search-button">Search</button>
+        <input
+          type="text"
+          id="search-bar"
+          class="form-control"
+          placeholder="Search user"
+        />
+        <button
+          class="btn btn-lg btn-outline-dark"
+          type="button"
+          id="search-button"
+        >
+          Search
+        </button>
+        <button
+          class="btn btn-lg btn-outline-dark"
+          type="button"
+          id="add-button"
+        >
+          Add
+        </button>
       </div>
+      <form class="input-group my-3">
+        <input
+          type="text"
+          id="input-id"
+          placeholder="User Id"
+          form-control
+          required
+        />
+        <input
+          type="text"
+          id="input-first-name"
+          class="form-control"
+          placeholder="firstname"
+          required
+        />
+        <input
+          type="text"
+          id="input-last-name"
+          class="form-control"
+          placeholder="lastname"
+          required
+        />
+        <input
+          type="email"
+          id="input-email"
+          class="form-control"
+          placeholder="email"
+          required
+        />
+        <input
+          type="tel"
+          id="input-phone"
+          class="form-control"
+          placeholder="phone"
+          required
+        />
+        <button
+          class="btn btn-lg btn-outline-dark"
+          id="add-to-table-submit"
+          disabled
+        >
+          Add to Table
+        </button>
+      </form>
       <table class="table table-striped">
         <thead id="table-head" class="thead-dark">
           <tr>
-            <th scope="col" data-column="id" data-order="asc">id &uarr;</th>
-            <th scope="col" data-column="firstName" data-order="asc">
-              firstName &uarr;
+            <th scope="col" data-column="id" data-order="">id &uarr;&darr;</th>
+            <th scope="col" data-column="firstName" data-order="">
+              firstName &uarr;&darr;
             </th>
-            <th scope="col" data-column="lastName" data-order="asc">
-              lastName &uarr;
+            <th scope="col" data-column="lastName" data-order="">
+              lastName &uarr;&darr;
             </th>
-            <th scope="col" data-column="email" data-order="asc">
-              email &uarr;
+            <th scope="col" data-column="email" data-order="">
+              email &uarr;&darr;
             </th>
-            <th scope="col" data-column="phone" data-order="asc">
-              phone &uarr;
+            <th scope="col" data-column="phone" data-order="">
+              phone &uarr;&darr;
             </th>
           </tr>
         </thead>
 
         <tbody id="data-table"></tbody>
       </table>
-      <div id="details-container"></div> 
+      <div id="details-container"></div>
 
       <div
         id="page-button-wrapper"

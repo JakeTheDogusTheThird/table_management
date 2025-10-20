@@ -55,6 +55,19 @@ class PaginatedDataSet {
     this.#numberOfPages = Math.ceil(this.#filteredDataSet.length / this.#rows);
   }
 
+  sort(column, order) {
+    this.#filteredDataSet.sort((a, b) => {
+      const aValue = a[column];
+      const bValue = b[column];
+      if (typeof aValue === "string") {
+        return order === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+      return order === "asc" ? aValue - bValue : bValue - aValue;
+    });
+  }
+
   filter(text) {
     text = text.toLowerCase();
     this.#filteredDataSet = this.#dataSet.filter((entry) => {
@@ -159,24 +172,14 @@ function routeSortingIndicators(dataSet) {
     const column = th.getAttribute("data-column");
     let order = th.getAttribute("data-order");
 
-    order = order === "desc" ? "asc" : "desc";
+    order = order === "asc" ? "desc" : "asc";
     th.setAttribute("data-order", order);
-    let dataSetPage = [...dataSet.getCurrentPage()];
-    dataSetPage.sort((a, b) => compareBy(a, b, column, order));
+
+    dataSet.sort(column, order);
+    const dataSetPage = dataSet.getCurrentPage();
     updateSortingIndicators(th, order);
     renderPageTable(dataSetPage);
   });
-}
-
-function compareBy(a, b, column, order) {
-  const aValue = a[column];
-  const bValue = b[column];
-  if (typeof aValue === "string") {
-    return order === "asc"
-      ? aValue.localeCompare(bValue)
-      : bValue.localeCompare(aValue);
-  }
-  return order === "asc" ? aValue - bValue : bValue - aValue;
 }
 
 function updateSortingIndicators(th, order) {
@@ -220,7 +223,7 @@ function routeTableRows(dataSet) {
       return;
     }
     console.log("TR", tr);
-    console.log("TR CHILDREND", tr.children);
+    console.log("TR CHILDREN", tr.children);
     const id = Number(tr.children[0].textContent);
     console.log("ID", id);
     const entry = dataSet.getDataEntryById(id);
@@ -229,13 +232,17 @@ function routeTableRows(dataSet) {
   });
 }
 
-fetchData().then((data) => {
-  const dataSet = new PaginatedDataSet(data, ROWS_PER_PAGE);
-  let firstPage = dataSet.getCurrentPage();
-  renderPageTable(firstPage);
-  routeTableRows(dataSet);
-  renderPageButtons(dataSet.currentPageNumber, dataSet.numberOfPages);
-  routePageButtons(dataSet);
-  routeSortingIndicators(dataSet);
-  routeSearchBar(dataSet);
-});
+document.addEventListener("DOMContentLoaded", main);
+
+function main() {
+  fetchData().then((data) => {
+    const dataSet = new PaginatedDataSet(data, ROWS_PER_PAGE);
+    let firstPage = dataSet.getCurrentPage();
+    renderPageTable(firstPage);
+    routeTableRows(dataSet);
+    renderPageButtons(dataSet.currentPageNumber, dataSet.numberOfPages);
+    routePageButtons(dataSet);
+    routeSortingIndicators(dataSet);
+    routeSearchBar(dataSet);
+  });
+}
