@@ -1,4 +1,25 @@
-UP_ARROW = "&uarr;";
-DOWN_ARROW = "&darr;";
-ACTIVE_BUTTON = "active";
-INACTIVE_BUTTON = "";
+const ASCENDING = "↑";
+const DESCENDING = "↓";
+const UNSORTED = "";
+const ACTIVE_BUTTON = "active";
+const INACTIVE_BUTTON = "";
+const PAGE_WINDOW_SIZE = 5;
+const ONE_PAGE = 1;
+const FIRST_PAGE = 1;
+const ZERO_PAGES = 0;
+const EXPANDED_ROW = "true";
+const NOT_EXPANDED_ROW = "false";
+
+export {
+  ASCENDING,
+  DESCENDING,
+  ACTIVE_BUTTON,
+  INACTIVE_BUTTON,
+  PAGE_WINDOW_SIZE,
+  ONE_PAGE,
+  FIRST_PAGE,
+  ZERO_PAGES,
+  UNSORTED,
+  EXPANDED_ROW,
+  NOT_EXPANDED_ROW
+};

@@ -1,26 +1,52 @@
+import {
+  FIRST_PAGE,
+  ONE_PAGE,
+  PAGE_WINDOW_SIZE,
+  ZERO_PAGES,
+  UNSORTED,
+} from "./constants.js";
+
 class PageRenderer {
-  #header;
+  #headers;
   #body;
   #buttons;
   #details;
-  constructor(tableHeader, tableBody, tableButtons, tableDetails) {
-    this.#header = tableHeader;
+  constructor(
+    columnHeaders,
+    tableBody,
+    pageButtonsContainer,
+    detailsContainer
+  ) {
+    this.#headers = columnHeaders;
     this.#body = tableBody;
-    this.#buttons = tableButtons;
-    this.#details = tableDetails;
+    this.#buttons = pageButtonsContainer;
+    this.#details = detailsContainer;
   }
 
-  updateColumnHeaderSortingOrder(columnId, sortingOrder) {
-    const column = this.#header.getElementById(columnId);
-    const orderPlaceholder = column.querySelector("order-placeholder");
+  updateColumnHeaderSortingOrder(dataColumn, sortingOrder) {
+    this.#headers.forEach((header) => {
+      const orderPlaceholder = header.querySelector(".order-placeholder");
+      if (header.getAttribute("data-column") === dataColumn) {
+        orderPlaceholder.innerHTML = sortingOrder;
+      } else {
+        orderPlaceholder.innerHTML = UNSORTED;
+      }
+    });
+  }
 
-    orderPlaceholder.innerHTML = sortingOrder;
+  renderTablePage(dataSet) {
+    const dataSetPage = dataSet.getCurrentPage();
+    const currentPageNumber = dataSet.currentPageNumber;
+    const numberOfPages = dataSet.numberOfPages;
+    this.renderBody(dataSetPage);
+    this.renderPageButtons(currentPageNumber, numberOfPages);
+    this.clearDetails();
   }
 
   renderBody(dataSetPage) {
     let rows = "";
     for (let i = 0; i < dataSetPage.length; i++) {
-      rows += `<tr>
+      rows += `<tr data-details="false">
                   <td>${dataSetPage[i].id}</td>
                   <td>${dataSetPage[i].firstName}</td>
                   <td>${dataSetPage[i].lastName}</td>
@@ -31,7 +57,7 @@ class PageRenderer {
     this.#body.innerHTML = rows;
   }
 
-  renderTableButtons(currentPageNumber, numberOfPages) {
+  renderPageButtons(currentPageNumber, numberOfPages) {
     if (numberOfPages === ONE_PAGE || numberOfPages === ZERO_PAGES) {
       this.#buttons.innerHTML = "";
       return;
@@ -66,7 +92,19 @@ class PageRenderer {
     this.#buttons.innerHTML = buttonsHtml;
   }
 
-  renderDetails() {}
+  renderDetails(rowData) {
+    this.#details.innerHTML = `<p>User selected <b>${rowData.firstName} ${rowData.lastName}</b></p>
+                       <p>Description:</p>
+                       <textarea>age: ${rowData.age}\ngender: ${rowData.gender}\ndate-of-birth: ${rowData.birthDate}</textarea>
+                       <p>Residential address: <b>${rowData.address.address}</b></p>
+                       <p>City: <b>${rowData.address.city}</b></p>
+                       <p>Province/State: <b>${rowData.address.state}</b></p>
+                       <p>Index <b>${rowData.address.postalCode}</b></p>`;
+  }
+
+  clearDetails() {
+    this.#details.innerHTML = "";
+  }
 
   resetSortingIndicators() {
     // Reset header indicators
@@ -76,3 +114,5 @@ class PageRenderer {
     // Set the arrow on the active column
   }
 }
+
+export { PageRenderer };
