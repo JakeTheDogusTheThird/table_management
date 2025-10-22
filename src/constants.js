@@ -9,6 +9,12 @@ const FIRST_PAGE = 1;
 const ZERO_PAGES = 0;
 const EXPANDED_ROW = "true";
 const NOT_EXPANDED_ROW = "false";
+const ID = 0;
+const FIRST_NAME = 1;
+const LAST_NAME = 2;
+const EMAIL = 3;
+const PHONE = 4;
+const NO_DATA = "";
 
 export {
   ASCENDING,
@@ -21,5 +27,11 @@ export {
   ZERO_PAGES,
   UNSORTED,
   EXPANDED_ROW,
-  NOT_EXPANDED_ROW
+  NOT_EXPANDED_ROW,
+  ID,
+  FIRST_NAME,
+  LAST_NAME,
+  EMAIL,
+  PHONE,
+  NO_DATA
 };

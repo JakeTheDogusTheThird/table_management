@@ -35,45 +35,53 @@
           Add
         </button>
       </div>
-      <form id="add-form" class="input-group my-3">
+      <form id="add-form" class="input-group my-3 d-none" disabled>
         <input
           type="text"
-          id="input-id"
+          id="add-id"
           placeholder="id"
           form-control
           required
+          pattern="\d+"
+          disabled
         />
         <input
           type="text"
           id="add-first-name"
           class="form-control"
           placeholder="firstname"
+          pattern="[A-Za-z\s]+"
           required
+          disabled
         />
         <input
           type="text"
           id="add-last-name"
           class="form-control"
           placeholder="lastname"
+          pattern="[A-Za-z\s]+"
           required
+          disabled
         />
         <input
           type="email"
           id="add-email"
           class="form-control"
           placeholder="email"
-          pattern="^(?:[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4})$"
+          pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}"
           required
+          disabled
         />
         <input
           type="tel"
           id="add-phone"
           class="form-control"
           placeholder="phone"
-          pattern="^(?:\+(81|49|91|61|1|92|44)\s\d{3}-\d{3}-\d{4})$"
+          pattern="\+(81|49|91|61|1|92|44)\s\d{3}-\d{3}-\d{4}"
           required
+          disabled
         />
-        <button class="btn btn-lg btn-outline-dark" id="save-button" type="button" disabled>
+        <button id="save-button" class="btn btn-lg btn-outline-dark" disabled>
           Save
         </button>
       </form>

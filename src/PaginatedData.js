@@ -1,4 +1,4 @@
-import { ASCENDING, DESCENDING, FIRST_PAGE } from "./constants.js";
+import { ASCENDING, NO_DATA, EMAIL, FIRST_NAME, FIRST_PAGE, ID, LAST_NAME, PHONE } from "./constants.js";
 
 class PaginatedData {
   #rows;
@@ -77,17 +77,36 @@ class PaginatedData {
   getRowDataById(id) {
     return this.#filteredData.find((entry) => entry.id === id);
   }
+  
+  isIdPresent(id) {
+    for (let i = 0; i < this.#data.length; i++) {
+      if (this.#data[i].id === id) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   save(form) {
-    const user = {
-      id: form[0].value,
-      firstName: form[1].value,
-      lastName: form[2].value,
-      email: form[3].value,
-      phone: form[4].value
-    }
-    this.#data = [user, ...this.#data];
-    this.#filteredData = [user, ...this.#filteredData];
+    const row = this.formToRow(form)
+    this.#data = [row, ...this.#data];
+    this.#filteredData = [row, ...this.#filteredData];
+  }
+
+  formToRow(form) {
+    return {
+      id: Number(form[ID].value),
+      firstName: form[FIRST_NAME].value,
+      lastName: form[LAST_NAME].value,
+      email: form[EMAIL].value,
+      phone: form[PHONE].value,
+      address: {
+        address: NO_DATA,
+        city: NO_DATA,
+        state: NO_DATA,
+        postalCode: NO_DATA,
+      }
+    };
   }
 }
 

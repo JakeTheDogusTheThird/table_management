@@ -30,7 +30,8 @@ function main() {
       columnHeaders,
       tableBody,
       pageButtonsContainer,
-      detailsContainer
+      detailsContainer,
+      addForm
     );
     const paginatedData = new PaginatedData(data, ROWS_PER_PAGE);
     const pageController = new PageController(paginatedData, pageRenderer);
@@ -61,18 +62,21 @@ function main() {
       pageController.handleRowClick(row);
     });
 
+    addButton.addEventListener("click", () => {
+      pageController.activateFormInput();
+    })
+
     inputs.forEach(input => {
-      input.addEventListener('input', () => {
+      input.addEventListener("input", () => {
         pageController.areInputsEmpty(inputs, saveButton);
-        console.log("input");
       });
-      input.addEventListener('change', () => {
+      input.addEventListener("change", () => {
         pageController.areInputsEmpty(inputs, saveButton);
-        console.log("change");
       });
     });
 
-    saveButton.addEventListener("click", () => {
+    addForm.addEventListener("submit", (event) => {
+      event.preventDefault();
       pageController.saveForm(addForm);
     })
   });

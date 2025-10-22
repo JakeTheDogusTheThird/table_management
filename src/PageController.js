@@ -4,6 +4,7 @@ import {
   NOT_EXPANDED_ROW,
   ASCENDING,
   DESCENDING,
+  ID,
 } from "./constants.js";
 
 class PageController {
@@ -73,7 +74,17 @@ class PageController {
     saveButton.disabled = !allFilled;
   }
 
+  activateFormInput() {
+    this.#pageRenderer.renderForm();
+  }
+
   saveForm(form) {
+    const id = parseInt(form[ID].value);
+    if (this.#paginatedData.isIdPresent(id)) {
+      alert(`row with id: ${id} already exists`);
+      return;
+    }
+
     this.#paginatedData.save(form);
     this.#pageRenderer.renderTablePage(this.#paginatedData);
   }

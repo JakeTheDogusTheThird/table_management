@@ -11,16 +11,19 @@ class PageRenderer {
   #body;
   #buttons;
   #details;
+  #form;
   constructor(
     columnHeaders,
     tableBody,
     pageButtonsContainer,
-    detailsContainer
+    detailsContainer,
+    formContainer
   ) {
     this.#headers = columnHeaders;
     this.#body = tableBody;
     this.#buttons = pageButtonsContainer;
     this.#details = detailsContainer;
+    this.#form = formContainer;
   }
 
   updateColumnHeaderSortingOrder(dataColumn, sortingOrder) {
@@ -106,12 +109,9 @@ class PageRenderer {
     this.#details.innerHTML = "";
   }
 
-  resetSortingIndicators() {
-    // Reset header indicators
-  }
-
-  updateSortingIndicator(columnKey, direction) {
-    // Set the arrow on the active column
+  renderForm() {
+    this.#form.classList.remove("d-none");
+    Array.from(this.#form.elements).forEach(element => element.disabled = false)
   }
 }
 
